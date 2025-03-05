@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>helpMate - Mental Health Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>helpMate</h1>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="counsellors.html">Find Counsellors</a>
+            
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Your Mental Health Matters</h2>
+                <p>Take our comprehensive mental health assessment to understand your emotional well-being better. Our carefully designed questionnaire helps identify signs of depression and provides personalized insights.</p>
+                <a href="#" class="cta-button">Start Assessment</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://img.freepik.com/free-vector/mental-health-awareness-concept_23-2148514643.jpg" alt="Mental Health Illustration">
+            </div>
+        </section>
+
+        <div id="assessment-container" style="display: none;">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Confidential Assessment</h3>
+                <p>Your responses are completely private and secure. We prioritize your confidentiality throughout the process.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Expert-Designed Questions</h3>
+                <p>Our questionnaire is crafted by mental health professionals to provide accurate insights.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Instant Results</h3>
+                <p>Receive immediate feedback and recommendations based on your responses.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 helpMate. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.querySelector('.cta-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('.hero').style.display = 'none';
+            document.querySelector('.features').style.display = 'none';
+            document.getElementById('assessment-container').style.display = 'block';
+            uiHandler.initializeAssessment();
+        });
+    </script>
+</body>
+</html>

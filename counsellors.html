@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Counsellors - helpMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f3e9f1;
+            color: #5d4e6d;
+        }
+
+        .navbar {
+            background-color: rgba(230, 195, 195, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #5d4e6d;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar h1 img {
+            width: 35px;
+            height: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #5d4e6d;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #b5c7e3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(93, 78, 109, 0.1);
+        }
+
+        .search-section h2 {
+            color: #5d4e6d;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e6c3c3;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-button {
+            padding: 1rem 2rem;
+            background-color: #b5c7e3;
+            color: #5d4e6d;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: #9ab0d1;
+        }
+
+        .counsellors-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .counsellor-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .counsellor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .counsellor-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        .counsellor-card h3 {
+            color: #5d4e6d;
+            margin-bottom: 0.5rem;
+        }
+
+        .counsellor-card p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .counsellor-card .specialization {
+            color: #b5c7e3;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .contact-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #e6c3c3;
+            color: #5d4e6d;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-button:hover {
+            background-color: #d1a6a6;
+        }
+
+        footer {
+            background-color: rgba(230, 195, 195, 0.95);
+            color: #5d4e6d;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .counsellors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>
+            <img src="https://cdn-icons-png.flaticon.com/512/3588/3588616.png" alt="helpMate Logo">
+            helpMate
+        </h1>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="counsellors.html">Find Counsellors</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="search-section">
+            <h2>Find Counsellors Near You</h2>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Enter your location...">
+                <button class="search-button">Search</button>
+            </div>
+        </section>
+
+        <div class="counsellors-grid">
+            <div class="counsellor-card">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQFcf_WzFmX2rw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1720618629886?e=1746057600&v=beta&t=GNwoDz17BqCfJWZL1gA4gpt2ShwAuYGedwXr08DqDZY" alt="Shipra Bhanja">
+                <h3>Shipra Bhanja</h3>
+                <p class="specialization">Depression & Anxiety Patient</p>
+                <p>📍 D.Y. Patil College of Engineering, Akurdi</p>
+                <p>⭐ 4.9 (120 reviews)</p>
+                <a href="#" class="contact-button">Contact Now</a>
+            </div>
+            <div class="counsellor-card">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQHVr1WWkx4jmw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1723270419324?e=1746057600&v=beta&t=pOyX7NyvmngIbKyis-J1QZ7LPvLPwYdjI_9r6j356a8" alt="Akanksha Algunde">
+                <h3>Akanksha Algunde</h3>
+                <p class="specialization">Trauma & PTSD Patient</p>
+                <p>📍 D.Y. Patil College of Engineering, Akurdi</p>
+                <p>⭐ 4.8 (95 reviews)</p>
+                <a href="#" class="contact-button">Contact Now</a>
+            </div>
+            <div class="counsellor-card">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQEi2XRpnAJf0g/profile-displayphoto-shrink_800_800/B4DZVLpGb2HwAc-/0/1740730822096?e=1746057600&v=beta&t=aSzOdh3uywl1xW3sM1FfY3j55v3b2gmZ5o3nhbzFB9I" alt="Ananya Sinha">
+                <h3>Ananya Sinha</h3>
+                <p class="specialization">Sadistic and Melancholic</p>
+                <p>📍 D.Y. Patil College of Engineering, Akurdi</p>
+                <p>⭐ 4.9 (150 reviews)</p>
+                <a href="#" class="contact-button">Contact Now</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 helpMate. All rights reserved.</p>
+    </footer>
+</body>
+</html> 
