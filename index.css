@@ -1,4 +1,46 @@
-﻿.hero {
+﻿
+.nav-links0{
+    
+    background-color: #ffe4e1;
+    color: #5d4e6d;
+    font-size: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+}
+.nav-links{
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #b5c7e3;
+    color: #5d4e6d;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+}
+.nav-links1{
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #b5c7e3;
+    color: #5d4e6d;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+}
+.nav-links2{
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #b5c7e3;
+    color: #5d4e6d;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+}
+
+.hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
