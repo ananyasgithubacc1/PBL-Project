@@ -1,4 +1,4 @@
-const ML_MODEL_URL = 'YOUR_ML_MODEL_ENDPOINT_HERE';  // Replace with your ML model endpoint
+const ML_MODEL_URL = 'YOUR_ML_MODEL_ENDPOINT_HERE'; // Replace with your ML model endpoint
 
 // Class to handle the mental health assessment
 class MentalHealthAssessment {
@@ -6,19 +6,14 @@ class MentalHealthAssessment {
         this.questions = [
             { id: 1, text: "What is your gender?", options: ["Male", "Female", "Others"] },
             { id: 2, text: "What is your age?", options: ["17-25", "26-35", "36-45", "46-55"] },
-            { id: 3, text: "Which city do you live in?", options: ["Visakhapatnam", "Bangalore", "Srinagar", "Varanasi", "Jaipur", "Pune", "Thane", "Chennai", "Nagpur", "Nashik", "Vadodara", "Kalyan", "Rajkot", "Ahmedabad", "Kolkata", "Mumbai", "Lucknow", "Indore", "Surat", "Ludhiana", "Bhopal", "Meerut", "Agra", "Ghaziabad", "Hyderabad", "Vasai-Virar", "Kanpur", "Patna", "Faridabad", "Delhi"] },
-            { id: 4, text: "What is your profession?", options: ["Student", "UI/UX Designer", "Digital Marketer", "Civil Engineer", "Content Writer", "Architect", "Educational Consultant", "Teacher", "Manager", "Computer Engineering", "Mechanical Engineering", "Chemical Engineering", "Entrepreneur", "Pharmacist", "Police"] },
-            { id: 5, text: "Academic pressure on a scale of 0-5?", options: ["0", "1", "2", "3", "4", "5"] },
-            { id: 6, text: "Work pressure on a scale of 0-5?", options: ["0", "1", "2", "3", "4", "5"] },
-            { id: 7, text: "CGPA? (0 to 10)", type: "decimalinput" },
-            { id: 8, text: "Study Satisfaction", options: ["0", "1", "2", "3", "4", "5"] },
-            { id: 9, text: "Sleep duration", options: ["less than 5 hrs", "5-6 hrs", "7-8 hrs", "more than 8"] },
-            { id: 10, text: "Dietary habits", options: ["healthy", "moderate", "unhealthy"] },
-            { id: 11, text: "Degree", options: ["M/B.Pharm", "BSc", "MSc", "BA", "BCA", "MA", "MCA", "B.TECH", "M.TECH", "PhD", "Class 12", "B.Ed", "M.Ed", "LLB", "BE", "ME", "BHM", "B.Com", "MD", "MBBS", "B.Arch", "LLM", "BBA", "M.Com"] },
-            { id: 12, text: "Have you ever had suicidal thoughts?", options: ["Yes", "No"] },
-            { id: 13, text: "Work/study hours?", type: "integerInput" },
-            { id: 14, text: "Financial stress", options: ["0", "1", "2", "3", "4", "5"] },
-            { id: 15, text: "Family history of mental illness?", options: ["Yes", "No"] },
+            { id: 3, text: "Academic pressure on a scale of 0-5?", options: ["0", "1", "2", "3", "4", "5"] },
+            { id: 4, text: "Study Satisfaction (1-10)", type: "scale" },
+            { id: 5, text: "Sleep duration", options: ["less than 5 hrs", "5-6 hrs", "7-8 hrs", "more than 8"] },
+            { id: 6, text: "Dietary habits", options: ["healthy", "moderate", "unhealthy"] },
+            { id: 7, text: "Have you ever had suicidal thoughts?", options: ["Yes", "No"] },
+            { id: 8, text: "Work/study hours?", type: "integerInput" },
+            { id: 9, text: "Financial stress (1-10)", type: "scale" },
+            { id: 10, text: "Family history of mental illness?", options: ["Yes", "No"] },
         ];
         this.answers = {};
     }
@@ -63,33 +58,50 @@ class UIHandler {
         const question = this.assessment.questions[index];
         const container = document.getElementById('assessment-container');
         let optionsHtml = "";
-        
+        let nextButtonHtml = "";
+
         if (question.options) {
             optionsHtml = question.options.map(option => `
                 <button class="option-button" onclick="uiHandler.selectAnswer(${question.id}, '${option}')">${option}</button>
             `).join('');
-        } else {
-            optionsHtml = `<input type="number" id="input-${question.id}" placeholder="Enter value" onblur="uiHandler.saveInputAnswer(${question.id})">`;
+        } else if (question.type === "integerInput") {
+            optionsHtml = `
+                <input type="number" id="input-${question.id}" placeholder="Enter value" min="0" max="24">
+            `;
+            nextButtonHtml = `<button class="next-button" onclick="uiHandler.saveInputAndNext(${question.id})">Next</button>`;
+        } else if (question.type === "scale") {
+            optionsHtml = `
+                <input type="range" id="input-${question.id}" min="1" max="10" step="1" value="5" 
+                    oninput="document.getElementById('scale-value-${question.id}').innerText = this.value">
+                <span id="scale-value-${question.id}">5</span>
+            `;
+            nextButtonHtml = `<button class="next-button" onclick="uiHandler.saveInputAndNext(${question.id})">Next</button>`;
         }
-        
+
         container.innerHTML = `
             <div class="question-card">
                 <h3>Question ${index + 1}</h3>
                 <p>${question.text}</p>
                 <div class="options">${optionsHtml}</div>
+                ${nextButtonHtml}
             </div>
         `;
     }
 
-    saveInputAnswer(questionId) {
+    saveInputAndNext(questionId) {
         const input = document.getElementById(`input-${questionId}`);
         if (input) {
             this.assessment.saveAnswer(questionId, input.value);
+            this.goToNextQuestion();
         }
     }
 
     selectAnswer(questionId, answer) {
         this.assessment.saveAnswer(questionId, answer);
+        this.goToNextQuestion();
+    }
+
+    goToNextQuestion() {
         if (this.currentQuestionIndex < this.assessment.questions.length - 1) {
             this.currentQuestionIndex++;
             this.renderQuestion(this.currentQuestionIndex);
@@ -99,8 +111,12 @@ class UIHandler {
     }
 
     showSubmitButton() {
-        document.getElementById('assessment-container').innerHTML += `
-            <button class="submit-button" onclick="uiHandler.submitAssessment()">Get Results</button>
+        document.getElementById('assessment-container').innerHTML = `
+            <div class="question-card">
+                <h3>All questions answered!</h3>
+                <p>Click below to submit your responses.</p>
+                <button class="submit-button" onclick="uiHandler.submitAssessment()">Submit</button>
+            </div>
         `;
     }
 }
