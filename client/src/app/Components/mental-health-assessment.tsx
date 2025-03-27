@@ -12,14 +12,14 @@ import WelcomeScreen from "@/app/Components/welcome-screen"
 
 const questions = [
   { id: 1, text: "What is your gender?", options: ["Male", "Female", "Others"] },
-  { id: 2, text: "What is your age?", options: ["17-25", "26-35", "36-45", "46-55"] },
+  { id: 2, text: "What is your age?", type: "integerInput" }, // Changed to input field
   { id: 3, text: "Academic pressure on a scale of 0-5?", options: ["0", "1", "2", "3", "4", "5"] },
-  { id: 4, text: "Study Satisfaction (1-10)", type: "scale" },
+  { id: 4, text: "Study Satisfaction (0-5)", options: ["0", "1", "2", "3", "4", "5"] }, // Changed to 0-5
   { id: 5, text: "Sleep duration", options: ["less than 5 hrs", "5-6 hrs", "7-8 hrs", "more than 8"] },
   { id: 6, text: "Dietary habits", options: ["healthy", "moderate", "unhealthy"] },
   { id: 7, text: "Have you ever had suicidal thoughts?", options: ["Yes", "No"] },
   { id: 8, text: "Work/study hours?", type: "integerInput" },
-  { id: 9, text: "Financial stress (1-10)", type: "scale" },
+  { id: 9, text: "Financial stress (0-5)", options: ["0", "1", "2", "3", "4", "5"] }, // Changed to 0-5
   { id: 10, text: "Family history of mental illness?", options: ["Yes", "No"] },
 ]
 
@@ -28,9 +28,7 @@ export default function MentalHealthAssessment() {
   const [answers, setAnswers] = useState<Record<number, any>>({})
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<null | { 
-    hasPotentialDepression: boolean; 
-    score: number; 
-    message: string 
+    prediction: number;
   }>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -61,36 +59,29 @@ export default function MentalHealthAssessment() {
     setError(null)
 
     try {
-      // Prepare the data to send to the Flask server
       const assessmentData = {
         gender: answers[1],
-        age: answers[2],
+        age: answers[2], // This will now be the direct numeric input
         academic_pressure: answers[3],
-        study_satisfaction: answers[4],
+        study_satisfaction: answers[4], // Now 0-5 scale
         sleep_duration: answers[5],
         dietary_habits: answers[6],
         suicidal_thoughts: answers[7],
         work_study_hours: answers[8],
-        financial_stress: answers[9],
+        financial_stress: answers[9], // Now 0-5 scale
         family_mental_history: answers[10]
       }
 
-      // Make the Axios request to your Flask server
       const response = await axios.post('http://localhost:5000/check', assessmentData)
-
-      // Set the result from the server response
+      
       setResult({
-        hasPotentialDepression: response.data.has_potential_depression,
-        score: response.data.score,
-        message: response.data.message || "Assessment completed."
+        prediction: response.data.prediction
       })
 
-      // Move to the result screen
       setCurrentStep(questions.length + 1)
     } catch (error) {
       console.error("Error submitting assessment:", error)
       
-      // Handle different types of errors
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "An error occurred while submitting the assessment.")
       } else {
@@ -139,7 +130,23 @@ export default function MentalHealthAssessment() {
                   transition={{ duration: 0.3 }}
                   className="flex-1 flex flex-col"
                 >
-                  <QuestionItem question={currentQuestion} answer={currentAnswer} onAnswer={handleAnswer} />
+                  <QuestionItem 
+                    question={currentQuestion} 
+                    answer={currentAnswer} 
+                    onAnswer={handleAnswer}
+                    // Add validation for age input
+                    validation={
+                      currentQuestion.id === 2 
+                        ? {
+                            validate: (value: string) => {
+                              const num = parseInt(value)
+                              return !isNaN(num) && num >= 10 && num <= 100
+                            },
+                            errorMessage: "Please enter a valid age between 10 and 100"
+                          }
+                        : undefined
+                    }
+                  />
 
                   <div className="flex justify-between mt-8">
                     <Button variant="outline" onClick={goToPrevQuestion} disabled={currentStep === 1} className="px-6">
@@ -147,7 +154,11 @@ export default function MentalHealthAssessment() {
                     </Button>
                     <Button
                       onClick={goToNextQuestion}
-                      disabled={currentAnswer === undefined || currentAnswer === null}
+                      disabled={currentAnswer === undefined || currentAnswer === null || 
+                        (currentQuestion.id === 2 && 
+                         (isNaN(parseInt(currentAnswer)) || 
+                          parseInt(currentAnswer) < 10 || 
+                          parseInt(currentAnswer) > 100))}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-6"
                     >
                       {isLastQuestion ? "Submit" : "Next"}
