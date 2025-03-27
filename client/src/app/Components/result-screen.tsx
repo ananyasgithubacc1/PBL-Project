@@ -7,45 +7,61 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface ResultScreenProps {
   result: {
-    hasPotentialDepression: boolean
-    score: number
-    message: string
-  } | null
-  onReset: () => void
+    prediction: number;
+  } | null;
+  onReset: () => void;
+  error?: string | null;
 }
 
-export default function ResultScreen({ result, onReset }: ResultScreenProps) {
+export default function ResultScreen({ result, onReset, error }: ResultScreenProps) {
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center"
+      >
+        <Alert variant="destructive" className="mb-6">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button onClick={onReset} variant="outline">
+          Try Again
+        </Button>
+      </motion.div>
+    )
+  }
+
   if (!result) return null
 
+  const hasDepression = result.prediction === 1
+
   const getResultColor = () => {
-    if (result.hasPotentialDepression) {
-      return "from-amber-500 to-red-500"
-    }
-    return "from-green-500 to-teal-500"
+    return hasDepression ? "from-amber-500 to-red-500" : "from-green-500 to-teal-500"
   }
 
   const getResultIcon = () => {
-    if (result.hasPotentialDepression) {
-      return <AlertTriangle size={80} className="text-amber-500" />
-    }
-    return <CheckCircle size={80} className="text-green-500" />
+    return hasDepression ? (
+      <AlertTriangle size={80} className="text-amber-500" />
+    ) : (
+      <CheckCircle size={80} className="text-green-500" />
+    )
   }
 
   const getResultTitle = () => {
-    if (result.hasPotentialDepression) {
-      return "Potential Signs of Depression Detected"
-    }
-    return "No Significant Signs of Depression"
+    return hasDepression ? "Potential Depression Detected" : "No Depression Detected"
   }
 
   const getResultDescription = () => {
-    if (result.hasPotentialDepression) {
-      return "Based on your responses, you may be experiencing some symptoms associated with depression. We recommend consulting with a mental health professional for a proper evaluation."
-    }
-    return "Based on your responses, you don't appear to be showing significant signs of depression. However, mental health is complex and can change over time."
+    return hasDepression
+      ? "Based on your responses, our assessment indicates you may be experiencing depression. We recommend consulting with a mental health professional."
+      : "Based on your responses, our assessment indicates you're not currently showing signs of depression."
   }
 
   const getResourcesContent = () => {
+    if (!hasDepression) return null
+
     return (
       <div className="mt-8">
         <h3 className="font-bold text-lg mb-2 dark:text-white">Mental Health Resources</h3>
@@ -75,7 +91,7 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
         <motion.div
           className={`h-full bg-gradient-to-r ${getResultColor()}`}
           initial={{ width: 0 }}
-          animate={{ width: `${result.score}%` }}
+          animate={{ width: hasDepression ? "100%" : "30%" }}
           transition={{ duration: 1, delay: 0.2 }}
         />
       </div>
@@ -84,11 +100,15 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
 
       <Alert className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 mb-6 text-left">
         <Info className="h-4 w-4 text-blue-500" />
-        <AlertTitle className="text-blue-700 dark:text-blue-300">Important Note</AlertTitle>
-        <AlertDescription className="text-blue-600 dark:text-blue-400">{result.message}</AlertDescription>
+        <AlertTitle className="text-blue-700 dark:text-blue-300">Assessment Result</AlertTitle>
+        <AlertDescription className="text-blue-600 dark:text-blue-400">
+          {hasDepression 
+            ? "Our analysis suggests you may benefit from professional support." 
+            : "Continue to monitor your mental health regularly."}
+        </AlertDescription>
       </Alert>
 
-      {result.hasPotentialDepression && getResourcesContent()}
+      {getResourcesContent()}
 
       <Button onClick={onReset} variant="outline" className="mt-6">
         Take Assessment Again
@@ -96,4 +116,3 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
     </motion.div>
   )
 }
-

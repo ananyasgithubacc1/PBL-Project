@@ -28,9 +28,7 @@ export default function MentalHealthAssessment() {
   const [answers, setAnswers] = useState<Record<number, any>>({})
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<null | { 
-    hasPotentialDepression: boolean; 
-    score: number; 
-    message: string 
+    prediction: number;
   }>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -61,7 +59,6 @@ export default function MentalHealthAssessment() {
     setError(null)
 
     try {
-      // Prepare the data to send to the Flask server
       const assessmentData = {
         gender: answers[1],
         age: answers[2],
@@ -75,22 +72,16 @@ export default function MentalHealthAssessment() {
         family_mental_history: answers[10]
       }
 
-      // Make the Axios request to your Flask server
       const response = await axios.post('http://localhost:5000/check', assessmentData)
-
-      // Set the result from the server response
+      
       setResult({
-        hasPotentialDepression: response.data.has_potential_depression,
-        score: response.data.score,
-        message: response.data.message || "Assessment completed."
+        prediction: response.data.prediction
       })
 
-      // Move to the result screen
       setCurrentStep(questions.length + 1)
     } catch (error) {
       console.error("Error submitting assessment:", error)
       
-      // Handle different types of errors
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "An error occurred while submitting the assessment.")
       } else {

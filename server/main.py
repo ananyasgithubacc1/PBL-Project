@@ -13,15 +13,18 @@ else:
     model = None
 @app.route('/check', methods=['POST'])
 def check_depression():
-    data=request.json
+    data = request.json
   
     if not data:
-       
        return jsonify({"error": "No JSON data received"}), 400
     
-    Processed_Data = preprocess_data(data)
-    prediction = model.predict([Processed_Data])
-    return jsonify({"message": data})
+    try:
+        Processed_Data = preprocess_data(data)
+        # Remove the extra [] since Processed_Data is already a DataFrame
+        prediction = model.predict(Processed_Data)
+        return jsonify({"prediction": int(prediction[0])})  # assuming prediction is numerical
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 def preprocess_data(raw_data):
