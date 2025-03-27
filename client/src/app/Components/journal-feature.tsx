@@ -13,8 +13,18 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+type MoodType = "positive" | "neutral" | "negative" | "stressed"
+
+interface JournalEntry {
+  id: string
+  date: Date
+  title: string
+  content: string
+  mood: MoodType
+}
+
 // Mock journal entries
-const mockEntries = [
+const mockEntries: JournalEntry[] = [
   {
     id: "1",
     date: new Date(2023, 9, 15),
@@ -40,11 +50,11 @@ const mockEntries = [
 
 export default function JournalFeature() {
   const [date, setDate] = useState<Date>(new Date())
-  const [entries, setEntries] = useState(mockEntries)
+  const [entries, setEntries] = useState<JournalEntry[]>(mockEntries)
   const [activeTab, setActiveTab] = useState("write")
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [mood, setMood] = useState<"positive" | "neutral" | "negative" | "stressed" | null>(null)
+  const [mood, setMood] = useState<MoodType | null>(null)
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
 
   const handleSaveEntry = () => {
@@ -53,12 +63,14 @@ export default function JournalFeature() {
     if (selectedEntry) {
       // Update existing entry
       setEntries(
-        entries.map((entry) => (entry.id === selectedEntry ? { ...entry, title, content, mood, date } : entry)),
+        entries.map((entry) => 
+          entry.id === selectedEntry ? { ...entry, title, content, mood, date } : entry
+        ),
       )
       setSelectedEntry(null)
     } else {
       // Create new entry
-      const newEntry = {
+      const newEntry: JournalEntry = {
         id: Date.now().toString(),
         date,
         title,
@@ -100,7 +112,7 @@ export default function JournalFeature() {
     setActiveTab("write")
   }
 
-  const getMoodIcon = (entryMood: string) => {
+  const getMoodIcon = (entryMood: MoodType) => {
     switch (entryMood) {
       case "positive":
         return <ThumbsUp className="h-4 w-4 text-green-500" />
@@ -218,6 +230,19 @@ export default function JournalFeature() {
                     <Lightbulb className="h-4 w-4 mr-2" />
                     Stressed
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={cn(
+                      "flex-1",
+                      mood === "neutral" &&
+                        "bg-gray-50 border-gray-200 text-gray-700 dark:bg-gray-900/20 dark:border-gray-800 dark:text-gray-300",
+                    )}
+                    onClick={() => setMood("neutral")}
+                  >
+                    <span className="h-4 w-4 mr-2">•</span>
+                    Neutral
+                  </Button>
                 </div>
               </div>
 
@@ -288,4 +313,3 @@ export default function JournalFeature() {
     </Card>
   )
 }
-
